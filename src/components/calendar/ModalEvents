@@ -1,0 +1,44 @@
+import React, { useContext } from "react";
+import { Button, Grid, Modal, Form } from "semantic-ui-react";
+import { Calendar } from "react-calendar";
+
+export default function ModalEvents({ title, onSet }) {
+  const [values, setValues] = useState({description: '', start_date:'', end_date:''})
+
+  function onChange(event, attribute) {
+    const { value, name } = attribute;
+
+    setValues({
+      ...values,
+      [name]: value,
+    });
+  }
+  return (
+    <Grid>
+      <Grid.Column width={4}>
+        <Modal closeIcon trigger={<Button>{title}</Button>}>
+          <Modal.Header>{title}</Modal.Header>
+          <Modal.Content>
+            <Form onSubmit={()=>onSet(values)}>
+              <Form.Group widths={"equal"}>
+                
+                <Form.Input
+                  label="description"
+                  name="description"
+                  onChange={onChange}
+                  value={values.description}
+                />
+
+              </Form.Group>
+            </Form>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button type="submit" negative>
+              Save
+            </Button>
+          </Modal.Actions>
+        </Modal>
+      </Grid.Column>
+    </Grid>
+  );
+}
