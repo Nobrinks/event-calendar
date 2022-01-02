@@ -8,5 +8,6 @@ export async function setEvent(events, idUser) {
     body: JSON.stringify({ events }),
   });
   const responseData = await response.json();
-  return responseData[0];
+  console.log(responseData)
+  return responseData;
 }

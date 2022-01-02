@@ -25,9 +25,7 @@ function SignUp() {
   function handleSubmit() {
     const {gender, username, email, password} = values;
     if (gender && username && email && password){
-      signUp({
-        user: values
-      })
+      signUp(values)
       navigate('/event-calendar')
     }
       

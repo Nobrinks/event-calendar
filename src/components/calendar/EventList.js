@@ -1,34 +1,77 @@
-import { useEffect, useState, useContext } from "react";
-import { Table, Dropdown, Icon, Input, Menu, Grid } from "semantic-ui-react";
+import React, { useEffect, useState, useContext } from "react";
+import {
+  Table,
+  Menu,
+  Grid,
+  Modal,
+  Button,
+  TableCell,
+  Form,
+} from "semantic-ui-react";
 import { AuthContext } from "../contexts/Auth";
-import { setEvent} from '../services/Api'
-import ModalEvents from "./ModalEvents";
-import ModalRemove from "./ModalRemove"
+import { setEvent } from "../services/Api";
+import DatePicker, { DateObject } from "react-multi-date-picker";
+const eventContent = { description: "", start_date: "", end_date: "" };
+
+function DatePickerInput({ openCalendar, value, handleValueChange, ...props }) {
+  return (
+    <Form.Input
+      onFocus={openCalendar}
+      value={value}
+      onChange={handleValueChange}
+      {...props}
+    />
+  );
+}
 
 export function EventList() {
   const [events, setEvents] = useState([]);
-  const {getEvents, setUser, user} = useContext(AuthContext)
-  
-  async function onAdd(values){
-    const userData = await setEvent([...events, values])
-    setUser(userData)    
+  const { getEvents, setUser, user } = useContext(AuthContext);
+  const [values, setValues] = useState(eventContent);
+  const [openAdd, setOpenAdd] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
+  const [openRemove, setOpenRemove] = React.useState(false);
+  const [startDate, setStartDate] = useState(new DateObject());
+  const [endDate, setEndDate] = useState(new DateObject());
+
+  function onChange(event, attribute) {
+    const { value, name } = attribute;
+
+    setValues({
+      ...values,
+      [name]: value,
+    });
   }
 
-  async function onEdit(index, values){
+  async function onAdd(values) {
+    const newEvent = {
+      ...values,
+      start_date: startDate.toUTC(),
+      end_date: endDate.toUTC(),
+    };
+    const userData = await setEvent([...events, newEvent], user.id);
+    setUser(userData);
+  }
+
+  async function onEdit(index, values) {
     const eventsEdited = events;
-    eventsEdited[index] = values;
-    const userData = await setEvent(eventsEdited, user.id)
-    setUser(userData)    
+    eventsEdited[index] = {
+      ...values,
+      start_date: startDate.toUTC(),
+      end_date: endDate.toUTC(),
+    };
+    const userData = await setEvent(eventsEdited, user.id);
+    setUser(userData);
   }
-  
 
-  async function handleRemoveEvent(index){
-    const userData = await setEvent(events.splice(index, 1), user.id);
-    setUser(userData)
+  async function handleRemoveEvent(index) {
+    events.splice(index, 1);
+    const userData = await setEvent(events, user.id);
+    setUser(userData);
   }
 
   useEffect(() => {
-    setEvents(getEvents())
+    setEvents(getEvents());
   }, [user]);
 
   return (
@@ -40,24 +83,54 @@ export function EventList() {
               Home
               <Menu.Menu>
                 <Menu.Item>
-                  {/* <ModalEvents title="Add Event" onSet={onAdd}/> */}
+                  <Modal
+                    closeIcon
+                    open={openAdd}
+                    onClose={() => setOpenAdd(false)}
+                    onOpen={() => {
+                      setOpenAdd(true);
+                      setValues(eventContent);
+                    }}
+                    trigger={<Button>Add an Event</Button>}
+                  >
+                    <Modal.Header>Add an Event</Modal.Header>
+                    <Modal.Content>
+                      <Form>
+                        <Form.Group widths={"equal"}>
+                          <DatePicker
+                            render={<DatePickerInput label="Start Date" />}
+                            value={startDate}
+                            onChange={setStartDate}
+                          />
+                          <DatePicker
+                            render={<DatePickerInput label="End Date" />}
+                            value={endDate}
+                            onChange={setEndDate}
+                          />
+                          <Form.Input
+                            label="description"
+                            name="description"
+                            onChange={onChange}
+                            value={values.description}
+                          />
+                        </Form.Group>
+                      </Form>
+                    </Modal.Content>
+                    <Modal.Actions>
+                      <Button
+                        onClick={() => {
+                          onAdd(values);
+                          setOpenAdd(false);
+                        }}
+                        negative
+                      >
+                        Add
+                      </Button>
+                    </Modal.Actions>
+                  </Modal>
                 </Menu.Item>
               </Menu.Menu>
             </Menu.Item>
-
-            {/* <Menu.Item name="browse">
-              <Icon name="grid layout" />
-              Browse
-            </Menu.Item>
-            <Menu.Item name="messages">Messages</Menu.Item>
-
-            <Dropdown item text="More">
-              <Dropdown.Menu>
-                <Dropdown.Item icon="edit" text="Edit Profile" />
-                <Dropdown.Item icon="globe" text="Choose Language" />
-                <Dropdown.Item icon="settings" text="Account Settings" />
-              </Dropdown.Menu>
-            </Dropdown> */}
           </Menu>
         </Grid.Column>
         <Grid.Column width={12}>
@@ -70,13 +143,104 @@ export function EventList() {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {events.map((event, index) => (
-                <Table.Row event={event} key={index}>
-                  <Table.Cell>{event.start_date}</Table.Cell>
-                  <Table.Cell>{event.end_date}</Table.Cell>
-                  <Table.Cell>{event.description}</Table.Cell>
-                  <Table.Cell>{<ModalRemove onYes={()=>handleRemoveEvent(index)}/>}</Table.Cell>
-                  <Table.Cell>{<ModalEvents title="Edit Event" onSet={(values)=>onEdit(index, values)}/>}</Table.Cell>
+              {events.map((eventValues, index) => (
+                <Table.Row event={eventValues} key={index}>
+                  <Table.Cell>
+                    {new Date(eventValues.start_date).toLocaleDateString()}
+                  </Table.Cell>
+                  <Table.Cell>
+                    {new Date(eventValues.end_date).toLocaleDateString()}
+                  </Table.Cell>
+                  <Table.Cell>{eventValues.description}</Table.Cell>
+                  <TableCell>
+                    <Grid>
+                      <Grid.Column width={12}>
+                        <Modal
+                          open={openRemove}
+                          trigger={<Button>Remove Event</Button>}
+                          onClose={() => setOpenRemove(false)}
+                          onOpen={() => setOpenRemove(true)}
+                        >
+                          <Modal.Header>Remove Event</Modal.Header>
+                          <Modal.Content>
+                            <p>Are you sure you want to delete this event?</p>
+                          </Modal.Content>
+                          <Modal.Actions>
+                            <Button
+                              onClick={() => setOpenRemove(false)}
+                              negative
+                            >
+                              No
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                handleRemoveEvent(index);
+                                setOpenRemove(false);
+                              }}
+                              positive
+                            >
+                              Yes
+                            </Button>
+                          </Modal.Actions>
+                        </Modal>
+                      </Grid.Column>
+                    </Grid>
+                  </TableCell>
+                  <TableCell>
+                    <Grid>
+                      <Grid.Column width={12}>
+                        <Modal
+                          closeIcon
+                          open={openEdit}
+                          onClose={() => setOpenEdit(false)}
+                          onOpen={() => {
+                            setOpenEdit(true);
+                            setValues(eventValues);
+                            setStartDate(new DateObject(eventValues.startDate));
+                            setEndDate(new DateObject(eventValues.endDate));
+                          }}
+                          trigger={<Button>Edit Event</Button>}
+                        >
+                          <Modal.Header>Edit Event</Modal.Header>
+                          <Modal.Content>
+                            <Form>
+                              <Form.Group widths={"equal"}>
+                                <DatePicker
+                                  render={
+                                    <DatePickerInput label="Start Date" />
+                                  }
+                                  value={new DateObject(startDate)}
+                                  onChange={setStartDate}
+                                />
+                                <DatePicker
+                                  render={<DatePickerInput label="End Date" />}
+                                  value={new DateObject(endDate)}
+                                  onChange={setEndDate}
+                                />
+                                <Form.Input
+                                  label="description"
+                                  name="description"
+                                  onChange={onChange}
+                                  value={values.description}
+                                />
+                              </Form.Group>
+                            </Form>
+                          </Modal.Content>
+                          <Modal.Actions>
+                            <Button
+                              onClick={() => {
+                                onEdit(index, values);
+                                setOpenEdit(false);
+                              }}
+                              negative
+                            >
+                              Save
+                            </Button>
+                          </Modal.Actions>
+                        </Modal>
+                      </Grid.Column>
+                    </Grid>
+                  </TableCell>
                 </Table.Row>
               ))}
             </Table.Body>
