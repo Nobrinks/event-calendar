@@ -1,0 +1,95 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "Paulo",
+      "password": "admin123",
+      "gender": "Male",
+      "email": "paulo@email.com",
+      "events": [
+        {
+          "start_date": "2021-12-03",
+          "end_date": "2021-12-04",
+          "description": "Ano Novo"
+        },
+        {
+          "description": "Aulas",
+          "start_date": "2022-03-01",
+          "end_date": "2022-06-01"
+        },
+        {
+          "description": "Férias",
+          "start_date": "2022-01-01",
+          "end_date": "2022-02-01"
+        },
+        {
+          "description": "teste",
+          "start_date": "",
+          "end_date": ""
+        },
+        {
+          "description": "teste 2"
+        },
+        {
+          "description": "teste 3",
+          "start_date": 1641516144144,
+          "end_date": 1641602544144
+        },
+        {
+          "description": "teste 4",
+          "start_date": 1642133135494,
+          "end_date": 1642219535495
+        },
+        {
+          "description": "teste 5",
+          "start_date": 1642219962443,
+          "end_date": 1642306362444
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "username": "Pedro",
+      "password": "admin321",
+      "gender": "Male",
+      "email": "pedro@email.com",
+      "events": [
+        {
+          "start_date": "2021-12-02",
+          "end_date": "2021-12-03",
+          "description": "Teste Patch"
+        }
+      ]
+    },
+    {
+      "username": "Pedro",
+      "password": "admin123",
+      "gender": "Male",
+      "email": "pedro@email.com",
+      "events": [
+        {
+          "start_date": "2021-01-01",
+          "end_date": "2021-01-02",
+          "description": "Feliz 2022"
+        }
+      ],
+      "id": 3
+    },
+    {
+      "username": "Ana",
+      "password": "ana123",
+      "gender": "Female",
+      "email": "ana@email.com",
+      "events": [],
+      "id": 4
+    },
+    {
+      "username": "antonio",
+      "password": "admin",
+      "gender": "male",
+      "email": "pvictorcoelho@hotmail.com",
+      "events": [],
+      "id": 5
+    }
+  ]
+}
