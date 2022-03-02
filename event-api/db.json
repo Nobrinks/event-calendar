@@ -8,42 +8,14 @@
       "email": "paulo@email.com",
       "events": [
         {
-          "start_date": "2021-12-03",
-          "end_date": "2021-12-04",
-          "description": "Ano Novo"
-        },
-        {
-          "description": "Aulas",
-          "start_date": "2022-03-01",
-          "end_date": "2022-06-01"
-        },
-        {
-          "description": "Férias",
-          "start_date": "2022-01-01",
-          "end_date": "2022-02-01"
-        },
-        {
-          "description": "teste",
-          "start_date": "",
-          "end_date": ""
-        },
-        {
-          "description": "teste 2"
-        },
-        {
           "description": "teste 3",
           "start_date": 1641516144144,
           "end_date": 1641602544144
         },
         {
-          "description": "teste 4",
-          "start_date": 1642133135494,
-          "end_date": 1642219535495
-        },
-        {
-          "description": "teste 5",
-          "start_date": 1642219962443,
-          "end_date": 1642306362444
+          "description": "Férias 2",
+          "start_date": 1641760468461,
+          "end_date": 1641674068461
         }
       ]
     },
@@ -90,6 +62,20 @@
       "email": "pvictorcoelho@hotmail.com",
       "events": [],
       "id": 5
+    },
+    {
+      "username": "rafael",
+      "password": "admin",
+      "gender": "male",
+      "email": "rafael@email.com",
+      "events": [
+        {
+          "description": "ferias",
+          "start_date": 1641072920018,
+          "end_date": 1643837720018
+        }
+      ],
+      "id": 6
     }
   ]
 }

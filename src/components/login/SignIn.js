@@ -17,7 +17,7 @@ function SignIn () {
   }
   
   async function handleSignIn() {
-    signIn(values.user, values.password)
+    const signed = await signIn(values.user, values.password)
     navigate('/event-calendar')
   }
 
